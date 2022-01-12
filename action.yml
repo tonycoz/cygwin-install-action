@@ -10,6 +10,7 @@ inputs:
     description: Packages to install
     required: false
   installpath:
+    description: Where to install cygwin
     required: false
     default: c:\cygwin
 
@@ -30,6 +31,7 @@ runs:
 
     - run: |
         $packages = '${{ inputs.packages }}'
+        $installpath = '${{ inputs.installpath }}'
         $pkg_list = $packages.Split('', [System.StringSplitOptions]::RemoveEmptyEntries)
         $pkg_list = $pkg_list | % { $_.Trim() }
         $pkg_list = $pkg_list | % { $_.Trim(',') }
@@ -40,7 +42,7 @@ runs:
          '-l', 'C:\cygwin-packages',
          # always install to C:\cygwin rather than the platform dependent
          # default to make everything simpler
-         '-R', '${{ inputs.installpath }}'
+         '-R', $installpath
         )
 
         if ($pkg_list.Count -gt 0) {
