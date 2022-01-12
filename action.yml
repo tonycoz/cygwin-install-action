@@ -13,6 +13,10 @@ inputs:
     description: Where to install cygwin
     required: false
     default: c:\cygwin
+  packagepath:
+    description: Where to download packages to
+    required: false
+    default: C:\cygwin-packages
 
 runs:
   using: "composite"
@@ -32,6 +36,7 @@ runs:
     - run: |
         $packages = '${{ inputs.packages }}'
         $installpath = '${{ inputs.installpath }}'
+        $packagepath = '${{ inputs.packagepath }}'
         $pkg_list = $packages.Split('', [System.StringSplitOptions]::RemoveEmptyEntries)
         $pkg_list = $pkg_list | % { $_.Trim() }
         $pkg_list = $pkg_list | % { $_.Trim(',') }
@@ -39,9 +44,9 @@ runs:
         $args = @(
          '-qgnO',
          '-s', 'http://mirrors.kernel.org/sourceware/cygwin/',
-         '-l', 'C:\cygwin-packages',
-         # always install to C:\cygwin rather than the platform dependent
-         # default to make everything simpler
+         '-l', $packagepath,
+         # always install to the supplied path rather than the platform
+	 # dependent default to make everything simpler
          '-R', $installpath
         )
 
